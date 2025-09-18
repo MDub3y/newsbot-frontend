@@ -1,0 +1,359 @@
+/* Global */
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.vx-shell {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.vx-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: linear-gradient(180deg, rgba(16,20,32,.9), rgba(16,20,32,.6));
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.vx-header__brand { font-weight: 800; letter-spacing: .2px; text-decoration: none; color: var(--text); }
+.vx-header__meta { color: var(--muted); font-size: .9rem; display:flex; gap:10px; align-items:center; }
+
+.vx-burger {
+  display: none;
+  inline-size: 36px; block-size: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: var(--panel-2);
+  color: var(--text);
+  align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.vx-burger svg { inline-size: 18px; block-size: 18px; }
+
+/* Grid */
+.vx-chat {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+/* Sidebar */
+.vx-sidebar {
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  height: calc(100vh - 96px);
+  position: sticky;
+  top: 64px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow: hidden;
+}
+.vx-sidebar__head { display:flex; gap:8px; }
+.vx-sidebar__scroll { overflow: auto; padding-right: 4px; }
+
+/* Thread nav list */
+.vx-nav { display: grid; gap: 8px; list-style: none; margin:0; padding:0; }
+.vx-nav__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 288px;
+  overflow: visible;
+  gap: 8px;
+  background: var(--panel-2);
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+}
+.vx-nav__item--active { border-color: rgba(122,162,247,.45); background: #20283b; }
+.vx-nav__item a { color: var(--text); text-decoration: none; font-weight: 600; }
+
+/* Buttons */
+.vx-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: var(--primary);
+  color: #0b0c10;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.vx-btn--block { display: block; width: 100%; text-align: center; }
+.vx-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(122,162,247,.25); }
+.vx-btn:active { transform: none; box-shadow: none; }
+.vx-btn--ghost { background: transparent; color: var(--text); border-color: rgba(255,255,255,.1); }
+.vx-btn--danger { background: var(--danger); color: #000; }
+
+/* Backdrop + toggle */
+.vx-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.4);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease;
+  z-index: 20;
+}
+
+.vx-nav__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* kebab + dropdown */
+.vx-nav__right { position: relative; flex: 0 0 auto; }
+.vx-kebab {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: grid; place-items: center;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: transparent; cursor: pointer;
+}
+.vx-kebab svg { width: 16px; height: 16px; fill: currentColor; color: var(--muted); }
+.vx-kebab:hover { border-color: rgba(255,255,255,0.18); color: var(--text); }
+
+.vx-menu {
+  position: absolute; right: 0; top: 34px;
+  background: var(--panel);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  min-width: 160px;
+  overflow: hidden;
+  z-index: 50;
+}
+.vx-menu button {
+  display: block; width: 100%;
+  background: transparent; color: var(--text);
+  border: 0; padding: 10px 12px; text-align: left; cursor: pointer;
+}
+.vx-menu button:hover { background: rgba(255,255,255,.04); }
+.vx-menu__danger { color: var(--danger); }
+
+/* --- Popover menu --- */
+.vx-popover {
+  position: fixed;
+  background: rgba(20,22,30,0.98);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.45);
+  padding: 6px;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+}
+.vx-popover__arrow {
+  position: absolute;
+  top: -6px;
+  width: 12px; height: 12px;
+  transform: rotate(45deg);
+  background: rgba(20,22,30,0.98);
+  border-left: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.vx-popover__item {
+  display: block; width: 100%;
+  background: transparent;
+  color: var(--text);
+  border: 0; padding: 10px 12px;
+  border-radius: 8px; text-align: left;
+  cursor: pointer; font: inherit;
+}
+.vx-popover__item:hover { background: rgba(255,255,255,0.06); }
+.vx-popover__danger { color: var(--danger); }
+
+/* Ensure one-line thread title with ellipsis (if not already present) */
+.vx-nav__title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Make New chat / Reset fill sidebar width (Claude-like) */
+.vx-btn--block { display: block; width: 100%; text-align: center; }
+
+/* ===== Avatars ===== */
+.vx-avatar {
+  width: 32px; height: 32px; border-radius: 10px;
+  display: grid; place-items: center; flex: 0 0 32px;
+  color: #0b0c10;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.vx-avatar svg { width: 18px; height: 18px; stroke: #0b0c10; stroke-width: 1.5; fill: currentColor; }
+.vx-avatar--bot { background: linear-gradient(135deg,#b4c3ff,#88a2ff); }
+.vx-avatar--user { background: linear-gradient(135deg,#9ff0d6,#76c6ff); }
+
+/* ===== Analyzing card ===== */
+.vx-analyzing-inline {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.vx-analyzing { /* big variant if you want to show as a floating card somewhere */
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.vx-analyzing__text { color: var(--muted); font-weight: 600; }
+
+.vx-analyzing__pulse {
+  position: relative; width: 18px; height: 18px;
+  display: grid; place-items: center;
+}
+.vx-analyzing__pulse i {
+  position: absolute; width: 18px; height: 18px; border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #c6b8ff 0%, #9fa8ff 60%, transparent 61%);
+  animation: vx-pulse 1.3s infinite ease-out;
+}
+.vx-analyzing__pulse i:nth-child(2) { animation-delay: .35s; }
+
+@keyframes vx-pulse {
+  0%   { transform: scale(.6); opacity: .75; }
+  70%  { transform: scale(1.4); opacity: .15; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Assistant paragraphs + sources (for readability) */
+.vx-msg__bubble p { margin: 0 0 10px; }
+.vx-msg__bubble p:last-child { margin-bottom: 0; }
+.vx-link { text-decoration: underline; text-underline-offset: 2px; color: #a9c0ff; }
+.vx-cites { margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,.12); display: grid; gap: 6px; }
+.vx-cites__label { font-size: .85rem; color: var(--muted); }
+.vx-cites__list { margin: 0; padding: 0; list-style: none; display: flex; gap: 10px; flex-wrap: wrap; }
+.vx-cites__list li a { display: inline-block; padding: 4px 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,.12); background: var(--panel-2); color: var(--text); }
+
+/* Thread list (new) */
+.vx-threadlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px; /* or var(--space-2) */
+}
+
+.vx-thread-row {
+  width: 288px;
+  display: flex;                     /* ⬅ keep items on one line */
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  background: var(--panel);
+  border: 1px solid var(--line, rgba(255,255,255,.08));
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  text-align: left;
+
+  &:hover { background: var(--panel-2, #161b26); }
+
+  &[aria-current='true'] {
+    outline: 1px solid rgba(122,162,247,.35);
+    background: rgba(122,162,247,.08);
+  }
+}
+
+/* If you ever render it as a <button class="vx-thread-row"> */
+button.vx-thread-row {
+  background: var(--panel);
+  border: 1px solid var(--line, rgba(255,255,255,.08));
+  color: inherit;
+}
+
+.vx-thread-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;           /* ⬅ truncate long titles */
+}
+
+.vx-thread-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vx-kebab {
+  min-width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  border: 1px solid var(--line, rgba(255,255,255,.08));
+  background: transparent;
+  color: var(--muted);
+
+  &:hover { background: var(--panel-2, #161b26); }
+}
+
+.vx-pop {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  background: var(--panel);
+  border: 1px solid var(--line, rgba(255,255,255,.08));
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: var(--shadow, 0 12px 36px rgba(5,10,15,.35));
+  z-index: 5;
+  min-width: 160px;
+}
+
+.vx-pop__item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--text);
+
+  &:hover { background: var(--panel-2, #161b26); }
+}
+
+.vx-pop__item.vx-danger { color: #ff6b6b; }
+
+
+@media (max-width: 1100px) {
+  .vx-burger { display: inline-flex; }
+  .vx-chat { grid-template-columns: 1fr; }
+  .vx-sidebar {
+    position: fixed; top: 64px; left: 0; bottom: 0; width: 320px; height: auto;
+    transform: translateX(-120%); transition: transform .2s ease; z-index: 25;
+  }
+  .vx-shell[data-sidebar="open"] .vx-sidebar { transform: translateX(0); }
+  .vx-shell[data-sidebar="open"] .vx-backdrop { opacity: 1; pointer-events: auto; }
+}
+/* On desktop: sidebar always visible (no transform) */
+@media (min-width: 1101px) {
+  .vx-shell .vx-sidebar { transform: none !important; }
+}

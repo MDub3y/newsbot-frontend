@@ -1,0 +1,158 @@
+/* ---------- Soft professional tone just for landing ---------- */
+.theme--pro {
+  /* Gentle, readable variant of your dark theme */
+  --bg:        #0d1118;
+  --panel:     #111827;
+  --panel-2:   #162033;
+  --text:      #e9eef6;
+  --muted:     #a9b4c3;
+  --primary:   #8fb4ff;      /* soft blue */
+  --primary-2: #a9c3ff;
+  --line:      rgba(255,255,255,0.08);
+  --radius:    14px;
+  --shadow:    0 12px 36px rgba(5, 10, 15, .35);
+}
+
+/* ---------- Landing page layout ---------- */
+.lp {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: clamp(20px, 3.2vw, 36px);
+  color: var(--text);
+}
+
+/* HERO */
+.lp-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(18px, 3vw, 36px);
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 36px;
+}
+
+.lp-hero__copy .lp-kicker {
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: .2px;
+  margin-bottom: 6px;
+}
+.lp-hero__copy h1 {
+  margin: 0 0 10px;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.3px;
+}
+.lp-hero__copy p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  max-width: 60ch;
+}
+.lp-cta-row {
+  display: flex; gap: 10px; align-items: center;
+  margin-bottom: 10px;
+}
+.lp-bullets { color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; }
+
+.lp-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.lp-btn--primary {
+  background: linear-gradient(180deg, var(--primary), var(--primary-2));
+  color: #0b0c10;
+  box-shadow: 0 10px 26px rgba(143, 180, 255, .28);
+}
+.lp-btn--primary:hover { transform: translateY(-1px); }
+.lp-btn--ghost {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--text);
+}
+.lp-btn svg { margin-left: 8px; }
+
+/* Right hero panel: logo wall */
+.lp-hero__panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: clamp(14px, 2vw, 18px);
+}
+.lp-logos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.lp-logo {
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  display: grid; place-items: center;
+  cursor: pointer;
+  transition: transform .12s ease;
+}
+.lp-logo:hover { transform: translateY(-2px); }
+.lp-logo img {
+  width: 92px; height: 52px; object-fit: contain; filter: grayscale(100%); opacity: .9;
+}
+.lp-logo:hover img { filter: grayscale(0%); opacity: 1; }
+.lp-note { color: var(--muted); font-size: .9rem; margin-top: 10px; }
+
+/* FEATURES */
+.lp-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(12px, 2vw, 16px);
+  margin: 26px 0;
+}
+.lp-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: clamp(14px, 2vw, 18px);
+  box-shadow: var(--shadow);
+}
+.lp-card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+.lp-card p  { margin: 0; color: var(--muted); }
+
+/* SOURCES STRIP */
+.lp-sources { margin: 18px 0 12px; }
+.lp-sources h4 { margin: 0 0 10px; font-size: 1rem; color: var(--muted); }
+.lp-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.lp-chip {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background .12s ease;
+}
+.lp-chip:hover { background: var(--panel-2); }
+.lp-chip img { width: 22px; height: 22px; object-fit: cover; border-radius: 50%; filter: grayscale(100%); }
+.lp-chip span { font-weight: 700; }
+
+/* FOOTER BAND */
+.lp-foot {
+  margin-top: 26px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.lp-foot__text { color: var(--muted); }
+
+/* Responsive */
+@media (max-width: 980px) {
+  .lp-hero { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .lp-features { grid-template-columns: 1fr; }
+  .lp-logos    { grid-template-columns: repeat(2, 1fr); }
+}
