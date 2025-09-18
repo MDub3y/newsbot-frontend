@@ -29,48 +29,67 @@ function linkify(parts: (string | React.ReactNode)[]) {
 }
 
 function renderInline(text: string): React.ReactNode[] {
-  // very small inline markdown: **bold**, _italic_, `code`
-  // order matters to avoid nested conflicts
-  let nodes: (string | React.ReactNode)[] = [text];
+  type Node = string | React.ReactNode;
 
-  // code
-  nodes = nodes.flatMap((t, idx) => {
-    if (typeof t !== 'string') return [t];
-    const parts = t.split(/(`[^`]+`)/g);
-    return parts.map((p, i) => {
-      if (p.startsWith('`') && p.endsWith('`')) {
-        return <code key={`c-${idx}-${i}`} className="vx-code">{p.slice(1, -1)}</code>;
+  // helper: split each string node by a regex and wrap matches
+  const splitWrap = (
+    list: Node[],
+    re: RegExp,
+    isWrapped: (s: string) => boolean,
+    wrap: (s: string, key: string) => React.ReactNode,
+    keyPrefix: string
+  ): Node[] => {
+    const out: Node[] = [];
+    let idx = 0;
+
+    for (const item of list) {
+      if (typeof item !== 'string') {
+        out.push(item);
+        continue;
       }
-      return p;
-    });
-  });
-
-  // bold
-  nodes = nodes.flatMap((t, idx) => {
-    if (typeof t !== 'string') return [t];
-    const parts = t.split(/(\*\*[^*]+\*\*)/g);
-    return parts.map((p, i) => {
-      if (p.startsWith('**') && p.endsWith('**')) {
-        return <strong key={`b-${idx}-${i}`}>{p.slice(2, -2)}</strong>;
+      const parts = item.split(re);
+      for (let i = 0; i < parts.length; i++) {
+        const p = parts[i];
+        if (isWrapped(p)) out.push(wrap(p, `${keyPrefix}-${idx}-${i}`));
+        else out.push(p);
       }
-      return p;
-    });
-  });
+      idx++;
+    }
+    return out;
+  };
 
-  // italic
-  nodes = nodes.flatMap((t, idx) => {
-    if (typeof t !== 'string') return [t];
-    const parts = t.split(/(_[^_]+_)/g);
-    return parts.map((p, i) => {
-      if (p.startsWith('_') && p.endsWith('_')) {
-        return <em key={`i-${idx}-${i}`}>{p.slice(1, -1)}</em>;
-      }
-      return p;
-    });
-  });
+  // start with raw text
+  let nodes: Node[] = [text ?? ''];
 
+  // order matters: code -> bold -> italic
+  nodes = splitWrap(
+    nodes,
+    /(`[^`]+`)/g,
+    (p) => p.startsWith('`') && p.endsWith('`'),
+    (p, key) => <code key={key} className="vx-code">{p.slice(1, -1)}</code>,
+    'c'
+  );
+
+  nodes = splitWrap(
+    nodes,
+    /(\*\*[^*]+\*\*)/g,
+    (p) => p.startsWith('**') && p.endsWith('**'),
+    (p, key) => <strong key={key}>{p.slice(2, -2)}</strong>,
+    'b'
+  );
+
+  nodes = splitWrap(
+    nodes,
+    /(_[^_]+_)/g,
+    (p) => p.startsWith('_') && p.endsWith('_'),
+    (p, key) => <em key={key}>{p.slice(1, -1)}</em>,
+    'i'
+  );
+
+  // finally, linkify URLs inside the resulting nodes
   return linkify(nodes);
 }
+
 
 type Block =
   | { kind: 'p'; text: string; cites: string[] }
